@@ -35,12 +35,12 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run RSS notifier
-        # <— explicitly re-inject the secret here
+        # Force the secret into this step’s env
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: |
-          # echo it (masked) so we know Python will see it
-          echo "▶️ SLACK_WEBHOOK_URL in shell: $SLACK_WEBHOOK_URL"
+          echo "▶️ In Run RSS notifier step, SLACK_WEBHOOK_URL is: '$SLACK_WEBHOOK_URL'"
           python rss_notify.py
+
 
 
