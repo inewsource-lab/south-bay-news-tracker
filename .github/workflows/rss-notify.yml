@@ -16,7 +16,11 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .cache
-          key: rss-seen
+          # Primary key uses the run number so it changes every run
+          key: rss-seen-${{ runner.os }}-${{ github.run_number }}
+          # Fallback to any cache matching this prefix
+          restore-keys: |
+            rss-seen-${{ runner.os }}-
 
       - name: Checkout code
         uses: actions/checkout@v4
@@ -27,6 +31,7 @@ jobs:
             echo "❌ SLACK_WEBHOOK_URL is empty!"
             exit 1
           fi
+          echo "✅ Secret loaded."
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -45,4 +50,5 @@ jobs:
         uses: actions/cache@v3
         with:
           path: .cache
-          key: rss-seen
+          # Use the *same* dynamic key so this run’s .cache/.seen.txt is saved
+          key: rss-seen-${{ runner.os }}-${{ github.run_number }}
