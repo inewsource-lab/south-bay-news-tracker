@@ -1,5 +1,6 @@
 import os
 import sys
+import datetime
 import feedparser
 import requests
 
@@ -61,18 +62,33 @@ else:
     seen = set()
 new_seen = set(seen)
 
+def format_pub_date(entry):
+    # Try published_parsed first
+    if getattr(entry, 'published_parsed', None):
+        dt = datetime.datetime(*entry.published_parsed[:6])
+        return dt.strftime('%Y-%m-%d %H:%M')
+    # Fall back to raw strings
+    return entry.get('published') or entry.get('updated') or 'Unknown date'
+
 def fetch_and_notify():
     for feed_url in RSS_FEEDS:
-        print(f"Checking feed: {feed_url} ({len(feedparser.parse(feed_url).entries)} entries)")
         feed = feedparser.parse(feed_url)
+        print(f"Checking {feed_url} → {len(feed.entries)} entries")
         for entry in feed.entries:
             link = entry.get('link')
-            text = (entry.get('title','') + ' ' + entry.get('summary','')).lower()
+            title = entry.get('title', '').strip()
+            summary_text = (entry.get('summary','') or '').strip().lower()
+            pub_date = format_pub_date(entry)
+            combined = (title + " " + summary_text).lower()
             for community in COMMUNITIES:
-                if community.lower() in text and link not in seen:
-                    print(f"→ Posting for {community}: {entry.get('title')}")
+                if community.lower() in combined and link not in seen:
+                    print(f"→ Posting for {community}: {title} (Published: {pub_date})")
                     requests.post(webhook, json={
-                        "text": f":bell: *{community}* — {entry.get('title')}\n{link}"
+                        "text": (
+                            f":bell: *{community}* — {title}\n"
+                            f"_Published: {pub_date}_\n"
+                            f"{link}"
+                        )
                     })
                     new_seen.add(link)
                     break
