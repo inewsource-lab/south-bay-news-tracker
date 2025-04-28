@@ -37,7 +37,7 @@ RSS_FEEDS = [
     "https://triton.news/feed",
     "https://www.kpbs.org/index.rss",
     "https://fox5sandiego.com/feed"
-    
+]   
 CACHE_DIR = '.cache'
 SEEN_FILE = os.path.join(CACHE_DIR, 'seen.txt')
 os.makedirs(CACHE_DIR, exist_ok=True)
