@@ -8,24 +8,23 @@ on:
 jobs:
   notify:
     runs-on: ubuntu-latest
-
-    # Inject the secret into every step of this job
     env:
+      # this will propagate to all steps, but we’ll also re-declare below
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Verify webhook is set
+      - name: Verify SLACK_WEBHOOK_URL is set
         run: |
-          echo "⏰ SLACK_WEBHOOK_URL is: '$SLACK_WEBHOOK_URL'"
           if [ -z "$SLACK_WEBHOOK_URL" ]; then
-            echo "❌ SLACK_WEBHOOK_URL is empty – check your repo secret!"
+            echo "❌ SLACK_WEBHOOK_URL is empty! Check your repo secret."
             exit 1
           fi
+          echo "✅ Secret loaded."
 
-      - name: Set up Python 3.x
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: '3.x'
@@ -36,12 +35,12 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run RSS notifier
-        run: python rss_notify.py
-
-      - name: Save seen‐list cache
-        uses: actions/cache@v3
-        with:
-          path: .cache
-          key: rss-cache
+        # <— explicitly re-inject the secret here
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: |
+          # echo it (masked) so we know Python will see it
+          echo "▶️ SLACK_WEBHOOK_URL in shell: $SLACK_WEBHOOK_URL"
+          python rss_notify.py
 
 
