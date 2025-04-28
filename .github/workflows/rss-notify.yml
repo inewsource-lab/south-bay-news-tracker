@@ -31,7 +31,11 @@ jobs:
       - name: Run RSS notifier
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: python rss_notify.py
+        run: |
+          # (optional) debug that it’s non-empty:
+          echo "Using webhook: $SLACK_WEBHOOK_URL"
+          python rss_notify.py
+
 
       - name: Save seen‐list cache
         uses: actions/cache@v3
