@@ -34,4 +34,36 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python rss_notify.py
 
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Restore seen‐list cache
+        uses: actions/cache@v3
+        with:
+          path: .cache
+          key: rss-cache
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with: { python-version: '3.x' }
+
+      - name: Install deps
+        run: |
+          pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Run RSS notifier
+        env:
+          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+        run: python rss_notify.py
+
+      - name: Save seen‐list cache
+        uses: actions/cache@v3
+        with:
+          path: .cache
+          key: rss-cache
+
 
