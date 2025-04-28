@@ -36,25 +36,36 @@ RSS_FEEDS = [
     "https://www.kpbs.org/index.rss",
     "https://fox5sandiego.com/feed",
     
-]
+CACHE_DIR = '.cache'
+SEEN_FILE = os.path.join(CACHE_DIR, 'seen.txt')
+os.makedirs(CACHE_DIR, exist_ok=True)
 
-def fetch_and_notify():
-    if not SLACK_WEBHOOK_URL:
-        print("Error: SLACK_WEBHOOK_URL is not set.")
-        return
-    for feed_url in RSS_FEEDS:
-        feed = feedparser.parse(feed_url)
-        for entry in feed.entries:
-            title = entry.get("title", "")
-            summary = entry.get("summary", "")
-            link = entry.get("link", "")
-            for community in COMMUNITIES:
-                if community.lower() in title.lower() or community.lower() in summary.lower():
-                    payload = {
-                        "text": f":bell: *New Article Mentioning {community}*\n*{title}*\n{link}"
-                    }
-                    requests.post(SLACK_WEBHOOK_URL, json=payload)
-                    break
+# Load seen URLs
+if os.path.exists(SEEN_FILE):
+    with open(SEEN_FILE) as f:
+        seen = set(line.strip() for line in f)
+else:
+    seen = set()
 
-if __name__ == "__main__":
-    fetch_and_notify()
+new_seen = set(seen)
+
+for feed_url in RSS_FEEDS:
+    feed = feedparser.parse(feed_url)
+    for entry in feed.entries:
+        link = entry.get('link')
+        title = entry.get('title', '')
+        summary = entry.get('summary', '')
+        for community in COMMUNITIES:
+            if community.lower() in (title + summary).lower():
+                if link not in seen:
+                    # post to Slack
+                    requests.post(SLACK_WEBHOOK_URL, json={
+                        "text": f":bell: *{community}* — {title}\n{link}"
+                    })
+                    new_seen.add(link)
+                break
+
+# Save updated seen list
+with open(SEEN_FILE, 'w') as f:
+    for url in new_seen:
+        f.write(url + '\n')
