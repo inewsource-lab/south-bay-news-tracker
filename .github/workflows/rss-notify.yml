@@ -1,41 +1,42 @@
 name: RSS → Slack Notifier
 
-# Run on a schedule and allow manual triggers
 on:
   schedule:
-    # every hour at minute 0 (change the cron to taste)
     - cron: '0 * * * *'
   workflow_dispatch:
 
 jobs:
   notify:
     runs-on: ubuntu-latest
+
+    # Inject the secret into every step of this job
+    env:
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
+
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - name: Restore seen‐list cache
-        uses: actions/cache@v3
-        with:
-          path: .cache
-          key: rss-cache
+      - name: Verify webhook is set
+        run: |
+          echo "⏰ SLACK_WEBHOOK_URL is: '$SLACK_WEBHOOK_URL'"
+          if [ -z "$SLACK_WEBHOOK_URL" ]; then
+            echo "❌ SLACK_WEBHOOK_URL is empty – check your repo secret!"
+            exit 1
+          fi
 
-      - name: Set up Python
+      - name: Set up Python 3.x
         uses: actions/setup-python@v4
-        with: { python-version: '3.x' }
+        with:
+          python-version: '3.x'
 
-      - name: Install deps
+      - name: Install dependencies
         run: |
           pip install --upgrade pip
           pip install -r requirements.txt
 
       - name: Run RSS notifier
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          # (optional) debug that it’s non-empty:
-          echo "Using webhook: $SLACK_WEBHOOK_URL"
-          python rss_notify.py
-
+        run: python rss_notify.py
 
       - name: Save seen‐list cache
         uses: actions/cache@v3
