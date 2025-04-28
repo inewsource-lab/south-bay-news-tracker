@@ -13,8 +13,29 @@ COMMUNITIES = [
     "Lincoln Acres"
 ]
 RSS_FEEDS = [
-    "https://www.sandiegouniontribune.com/rss/feed?sectionName=sd-local-regional",
-    "https://www.sandiegoreader.com/feeds/print/"
+    "https://www.sandiegouniontribune.com/rss/feed",
+    "https://www.sandiegoreader.com/feeds/print/",
+    "https://www.nbcsandiego.com/?rss=y",
+    "https://feeds.feedblitz.com/cbs8/news",
+    "https://timesofsandiego.com/feed",
+    "https://voiceofsandiego.org/feed",
+    "https://www.countynewscenter.com/news/rss",
+    "https://coronadotimes.com/feed",
+    "https://sdcitytimes.com/feed,"
+    "https://laprensa.org/feed",
+    "https://clairemonttimes.com/feed",
+    "https://thecoronadonews.com/feed",
+    "https://mesapress.com/feed",
+    "https://sdnews.com/feed",
+    "https://lgbtqsd.news/feed",
+    "https://gay-sd.com/feed",
+    "https://delmartimes.net/feed",
+    "https://sandiegonewsdesk.com/feed",
+    "https://chulavistatoday.com/feed",
+    "https://triton.news/feed",
+    "https://www.kpbs.org/index.rss",
+    "https://fox5sandiego.com/feed",
+    
 ]
 
 def fetch_and_notify():
