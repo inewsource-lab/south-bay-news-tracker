@@ -34,14 +34,4 @@ jobs:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python rss_notify.py
 
-      - name: Test Slack webhook
-        if: ${{ github.event_name == 'workflow_dispatch' }}
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          curl -X POST \
-            -H 'Content-Type: application/json' \
-            -d '{"text":"🚀 GitHub Actions test alert!"}' \
-            "$SLACK_WEBHOOK_URL"
-
 
