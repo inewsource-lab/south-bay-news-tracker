@@ -33,12 +33,6 @@ jobs:
         env:
           SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
         run: python rss_notify.py
-        
-jobs:
-  notify:
-    runs-on: ubuntu-latest
-    steps:
-      # … your earlier steps (checkout, setup-python, install-deps, run notifier) …
 
       - name: Test Slack webhook
         if: ${{ github.event_name == 'workflow_dispatch' }}
