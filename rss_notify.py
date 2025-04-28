@@ -10,7 +10,9 @@ COMMUNITIES = [
     "Bonita",
     "San Ysidro",
     "Otay Mesa",
-    "Lincoln Acres"
+    "Lincoln Acres",
+    "South Bay",
+    "South County"
 ]
 RSS_FEEDS = [
     "https://www.sandiegouniontribune.com/rss/feed",
