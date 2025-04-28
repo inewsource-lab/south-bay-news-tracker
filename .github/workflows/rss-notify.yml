@@ -9,20 +9,24 @@ jobs:
   notify:
     runs-on: ubuntu-latest
     env:
-      # this will propagate to all steps, but we’ll also re-declare below
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
+      - name: Restore seen-list cache
+        uses: actions/cache@v3
+        with:
+          path: .cache
+          key: rss-seen
+
       - name: Checkout code
         uses: actions/checkout@v4
 
       - name: Verify SLACK_WEBHOOK_URL is set
         run: |
           if [ -z "$SLACK_WEBHOOK_URL" ]; then
-            echo "❌ SLACK_WEBHOOK_URL is empty! Check your repo secret."
+            echo "❌ SLACK_WEBHOOK_URL is empty!"
             exit 1
           fi
-          echo "✅ Secret loaded."
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -35,12 +39,10 @@ jobs:
           pip install -r requirements.txt
 
       - name: Run RSS notifier
-        # Force the secret into this step’s env
-        env:
-          SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-        run: |
-          echo "▶️ In Run RSS notifier step, SLACK_WEBHOOK_URL is: '$SLACK_WEBHOOK_URL'"
-          python rss_notify.py
+        run: python rss_notify.py
 
-
-
+      - name: Save seen-list cache
+        uses: actions/cache@v3
+        with:
+          path: .cache
+          key: rss-seen
