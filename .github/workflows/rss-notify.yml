@@ -12,27 +12,28 @@ jobs:
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 
     steps:
+      # 1. Pull down your code
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Restore the cache now that .cache/ was not wiped
       - name: Restore seen-list cache
         uses: actions/cache@v3
         with:
           path: .cache
-          # Primary key uses the run number so it changes every run
           key: rss-seen-${{ runner.os }}-${{ github.run_number }}
-          # Fallback to any cache matching this prefix
           restore-keys: |
             rss-seen-${{ runner.os }}-
 
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Verify SLACK_WEBHOOK_URL is set
+      # 3. (Optional) Verify secret is present
+      - name: Verify SLACK_WEBHOOK_URL
         run: |
           if [ -z "$SLACK_WEBHOOK_URL" ]; then
             echo "❌ SLACK_WEBHOOK_URL is empty!"
             exit 1
           fi
-          echo "✅ Secret loaded."
 
+      # 4. Python setup & deps
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
@@ -43,12 +44,13 @@ jobs:
           pip install --upgrade pip
           pip install -r requirements.txt
 
+      # 5. Run your notifier (which will now see the restored .cache/seen.txt)
       - name: Run RSS notifier
         run: python rss_notify.py
 
+      # 6. Save the updated .cache back to GitHub’s cache
       - name: Save seen-list cache
         uses: actions/cache@v3
         with:
           path: .cache
-          # Use the *same* dynamic key so this run’s .cache/.seen.txt is saved
           key: rss-seen-${{ runner.os }}-${{ github.run_number }}
