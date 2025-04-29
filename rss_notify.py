@@ -4,6 +4,9 @@ import datetime
 import feedparser
 import requests
 
+from datetime import datetime
+from zoneinfo import ZoneInfo
+
 # DEBUG block: prove that Python sees the secret
 webhook = os.getenv('SLACK_WEBHOOK_URL')
 print(f"🔍 [DEBUG] SLACK_WEBHOOK_URL in Python is: {repr(webhook)}")
@@ -65,10 +68,15 @@ new_seen = set(seen)
 def format_pub_date(entry):
     # Try published_parsed first
     if getattr(entry, 'published_parsed', None):
-        dt = datetime.datetime(*entry.published_parsed[:6])
-        return dt.strftime('%Y-%m-%d %H:%M')
-    # Fall back to raw strings
-    return entry.get('published') or entry.get('updated') or 'Unknown date'
+        # Build a UTC datetime
+        dt_utc = datetime(*entry.published_parsed[:6], tzinfo=ZoneInfo("UTC"))
+        # Convert to Pacific Time
+        dt_pt  = dt_utc.astimezone(ZoneInfo("America/Los_Angeles"))
+        # Format however you like; here we add "PT"
+        return dt_pt.strftime('%Y-%m-%d %H:%M PT')
+    # Fall back to raw strings (these may already include a timezone)
+    raw = entry.get('published') or entry.get('updated') or 'Unknown date'
+    return raw
 
 def fetch_and_notify():
     for feed_url in RSS_FEEDS:
