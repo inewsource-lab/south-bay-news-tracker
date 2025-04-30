@@ -18,7 +18,7 @@ jobs:
       - name: Restore seen-list cache
         uses: actions/cache@v3
         with:
-          path: .cache
+          path: .cache_north
           key: rss-seen-north-${{ github.run_number }}
           restore-keys: |
             rss-seen-north-
@@ -39,6 +39,6 @@ jobs:
       - name: Save seen-list cache
         uses: actions/cache@v3
         with:
-          path: .cache
+          path: .cache_north
           key: rss-seen-north-${{ github.run_number }}
 
