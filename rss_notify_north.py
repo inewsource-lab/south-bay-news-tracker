@@ -55,7 +55,22 @@ RSS_FEEDS = [
     "https://sandiegonewsdesk.com/feed",
     "https://chulavistatoday.com/feed",
     "https://triton.news/feed",
-    "https://www.sandiegoreader.com/feeds/print/"
+    "https://www.sandiegoreader.com/feeds/print/",
+    "https://jewishjournal.com/feed/",
+    "https://www.ranchosfnews.com/feed/",
+    "https://www.valleycenter.com/feed/",
+    "https://escondidotimes-advocate.com/feed/",
+    "https://myvalleynews.com/feed/",
+    "https://www.villagenews.com/feed/",
+    "https://patch.com/feeds/california/encinitas",
+    "https://patch.com/feeds/california/carlsbad",
+    "https://patch.com/feeds/california/oceanside-camp-pendleton",
+    "https://patch.com/feeds/california/san-marcos-vista",
+    "https://patch.com/feeds/california/poway",
+    "https://www.ramonasentinel.com/feed/",
+    "https://www.powaynewschieftain.com/feed/",
+    "https://www.sandiegobusiness.com/feed/"
+    
 ]
 
 # Cache setup to avoid duplicates
