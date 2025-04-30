@@ -47,7 +47,14 @@ RSS_FEEDS = [
     "https://feeds.feedblitz.com/cbs8/news",
     "https://fox5sandiego.com/feed",
     "https://www.kpbs.org/index.rss",
-    "https://www.countynewscenter.com/news/rss"
+    "https://www.countynewscenter.com/news/rss",
+    "https://sdnews.com/feed",
+    "https://lgbtqsd.news/feed",
+    "https://gay-sd.com/feed",
+    "https://delmartimes.net/feed",
+    "https://sandiegonewsdesk.com/feed",
+    "https://chulavistatoday.com/feed",
+    "https://triton.news/feed"
 ]
 
 # Cache setup to avoid duplicates
