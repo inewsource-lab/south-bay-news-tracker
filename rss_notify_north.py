@@ -54,7 +54,8 @@ RSS_FEEDS = [
     "https://delmartimes.net/feed",
     "https://sandiegonewsdesk.com/feed",
     "https://chulavistatoday.com/feed",
-    "https://triton.news/feed"
+    "https://triton.news/feed",
+    "https://www.sandiegoreader.com/feeds/print/"
 ]
 
 # Cache setup to avoid duplicates
